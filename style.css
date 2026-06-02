@@ -136,17 +136,45 @@ body::before {
     50% { opacity: 1; }
 }
 
-/* ========== HEADER MEWAH ========== */
+/* ========== HEADER MEWAH DENGAN GIF ========== */
 .header-badge {
     text-align: center;
     margin-bottom: 30px;
-    padding: 30px 20px;
+    padding: 30px 60px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(15px);
     border-radius: 40px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+}
+
+/* GIF di kiri dan kanan header */
+.header-gif-left,
+.header-gif-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.header-gif-left {
+    left: 20px;
+}
+
+.header-gif-right {
+    right: 20px;
+}
+
+.header-gif-left img,
+.header-gif-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(78, 205, 196, 0.5));
 }
 
 .glow-effect {
@@ -650,7 +678,7 @@ body::before {
     transform: scale(1.05);
 }
 
-/* ========== TOAST NOTIFICATION - WARNING TEXT WHITE ========== */
+/* ========== TOAST NOTIFICATION ========== */
 .toast {
     position: fixed;
     top: 20px;
@@ -671,13 +699,11 @@ body::before {
     color: white;
 }
 
-/* Pastikan semua teks di dalam toast berwarna putih */
 .toast,
 .toast * {
     color: white;
 }
 
-/* Icon dalam toast tetap putih */
 .toast i {
     color: white;
 }
@@ -698,7 +724,7 @@ body::before {
     transform: translateX(0);
 }
 
-/* Responsive */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     body {
         padding: 10px;
@@ -710,6 +736,24 @@ body::before {
     
     .header-badge h1 {
         font-size: 22px;
+    }
+    
+    .header-badge {
+        padding: 25px 45px;
+    }
+    
+    .header-gif-left,
+    .header-gif-right {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .header-gif-left {
+        left: 12px;
+    }
+    
+    .header-gif-right {
+        right: 12px;
     }
     
     .history-header {
@@ -732,5 +776,33 @@ body::before {
     
     .btn-copy-password {
         margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-badge {
+        padding: 20px 35px;
+    }
+    
+    .header-gif-left,
+    .header-gif-right {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .header-gif-left {
+        left: 8px;
+    }
+    
+    .header-gif-right {
+        right: 8px;
+    }
+    
+    .header-badge h1 {
+        font-size: 18px;
+    }
+    
+    .header-badge p {
+        font-size: 11px;
     }
 }
