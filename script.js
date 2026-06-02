@@ -224,4 +224,31 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         document.getElementById('loading-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
-        show
+        showToast('✨ Selamat datang di ANGKABET_GEN_Z88 ✨', 'info');
+    }, 2000);
+    
+    loadHistory();
+    
+    document.getElementById('proses-btn').addEventListener('click', prosesReset);
+    document.getElementById('copy-btn').addEventListener('click', copyFullMessage);
+    document.getElementById('clear-btn').addEventListener('click', clearResult);
+    
+    const copyPasswordBtn = document.getElementById('copy-password-only');
+    if (copyPasswordBtn) {
+        copyPasswordBtn.addEventListener('click', copyPasswordOnly);
+    }
+    
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', clearAllHistory);
+    }
+    
+    document.getElementById('username').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            prosesReset();
+        }
+    });
+});
+
+// Make deleteHistoryItem available globally
+window.deleteHistoryItem = deleteHistoryItem;
