@@ -650,7 +650,7 @@ body::before {
     transform: scale(1.05);
 }
 
-/* Toast Notification */
+/* ========== TOAST NOTIFICATION - WARNING TEXT WHITE ========== */
 .toast {
     position: fixed;
     top: 20px;
@@ -668,10 +668,18 @@ body::before {
     transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     max-width: 380px;
     border: 1px solid rgba(255,255,255,0.1);
+    color: white;
 }
 
-.toast.show {
-    transform: translateX(0);
+/* Pastikan semua teks di dalam toast berwarna putih */
+.toast,
+.toast * {
+    color: white;
+}
+
+/* Icon dalam toast tetap putih */
+.toast i {
+    color: white;
 }
 
 .toast.success {
@@ -684,6 +692,10 @@ body::before {
 
 .toast.info {
     border-left: 4px solid #45b7d1;
+}
+
+.toast.show {
+    transform: translateX(0);
 }
 
 /* Responsive */
