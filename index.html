@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ANGKABET_GEN_Z88 - Reset Password Member</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="loading-spinner">
+            <img src="https://i.ibb.co/F4y044MM/c297c6e2593a.png" alt="Loading">
+            <p>Memuat sistem...</p>
+        </div>
+    </div>
+
+    <div class="container" id="main-content" style="display: none;">
+        <div class="header-badge">
+            <h1>ANGKABET_GEN_Z88</h1>
+            <p>Reset Password Member</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-key"></i>
+                <h2>Reset Password Member</h2>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> User ID / Username Member</label>
+                    <input type="text" id="username" placeholder="Contoh: pargoyitugay12" autocomplete="off">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="no-limit">
+                    <label for="no-limit">No Limit Password (bisa lebih dari 16 karakter)</label>
+                </div>
+
+                <button id="proses-btn" class="btn-proses">
+                    <i class="fas fa-sync-alt"></i> Proses Reset Password
+                </button>
+
+                <div class="result-card" id="result-card" style="display: none;">
+                    <div class="result-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Reset Password Berhasil!</h3>
+                    </div>
+                    <div class="result-body">
+                        <p>Yth, Kami sudah berhasil mereset kembali password anda,</p>
+                        <div class="result-item">
+                            <span class="label">User ID / Username :</span>
+                            <span class="value" id="result-username"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Password :</span>
+                            <span class="value" id="result-password"></span>
+                        </div>
+                        <p class="note">Mohon untuk mengcopy paste User ID / Username dan password yang telah kami berikan tanpa menggunakan spasi ya bosku.<br>
+                        Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada menu Ubah Password, Dan mohon untuk selalu menjaga kerahasiaan akun data anda dari orang lain, Terima kasih.</p>
+                    </div>
+                    <div class="result-actions">
+                        <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> Copy Data</button>
+                        <button id="clear-btn" class="btn-clear"><i class="fas fa-trash-alt"></i> Bersihkan Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <div class="history-header">
+                <i class="fas fa-history"></i>
+                <h3>History Reset Password</h3>
+                <button id="clear-history-btn" class="btn-clear-history"><i class="fas fa-eraser"></i> Hapus Semua</button>
+            </div>
+            <div class="history-table-wrapper">
+                <table class="history-table" id="history-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>User ID</th>
+                            <th>Password</th>
+                            <th>Tanggal & Jam</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <tr class="empty-row">
+                            <td colspan="4">Belum ada history</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
