@@ -63,9 +63,9 @@ function showToast(message, type = 'success') {
     toast.innerHTML = '';
     
     let icon = '';
-    if (type === 'success') icon = '<i class="fas fa-check-circle" style="color:#4ecdc4"></i>';
-    if (type === 'error') icon = '<i class="fas fa-exclamation-circle" style="color:#ff6b6b"></i>';
-    if (type === 'info') icon = '<i class="fas fa-info-circle" style="color:#45b7d1"></i>';
+    if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
+    if (type === 'error') icon = '<i class="fas fa-exclamation-circle"></i>';
+    if (type === 'info') icon = '<i class="fas fa-info-circle"></i>';
     
     toast.innerHTML = icon + '<span>' + message + '</span>';
     toast.className = 'toast ' + type + ' show';
@@ -135,8 +135,8 @@ function renderHistory() {
     tbody.innerHTML = resetHistory.map((item, index) => `
         <tr>
             <td>${index + 1}</td>
-            <td><strong style="color: #4ecdc4;">${escapeHtml(item.username)}</strong></td>
-            <td style="font-family: monospace; color: #ff6b6b;">${escapeHtml(item.password)}</td>
+            <td><strong style="color: #ffb87a;">${escapeHtml(item.username)}</strong></td>
+            <td style="font-family: monospace; color: #ffaa6a;">${escapeHtml(item.password)}</td>
             <td style="font-size: 12px;">${escapeHtml(item.datetime)}</td>
             <td>
                 <button class="btn-delete-row" onclick="deleteHistoryItem(${index})">
