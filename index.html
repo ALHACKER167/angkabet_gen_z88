@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,7 +10,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <!-- Loading Animation Keren -->
+
+    <!-- Background media layer -->
+    <div id="bg-media"></div>
+    <div id="bg-overlay"></div>
+
+    <!-- Tombol Background Manager (pojok kanan bawah) -->
+    <button id="bg-toggle-btn" title="Atur Background">
+        <i class="fas fa-image"></i>
+    </button>
+
+    <!-- Panel Background Manager -->
+    <div id="bg-panel">
+        <div class="bg-panel-title"><i class="fas fa-palette"></i> Atur Background</div>
+
+        <label class="bg-upload-label" for="bg-file-input">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Upload Foto / GIF / Video</span>
+            <small>JPG, PNG, GIF, MP4, WEBM</small>
+        </label>
+        <input type="file" id="bg-file-input" accept="image/*,video/*" style="display:none">
+
+        <div class="bg-slider-wrap">
+            <label><i class="fas fa-adjust"></i> Transparansi Background</label>
+            <div class="slider-row">
+                <input type="range" id="bg-opacity-slider" min="0.1" max="1" step="0.05" value="0.85">
+                <span id="bg-opacity-value">85%</span>
+            </div>
+        </div>
+
+        <button id="bg-clear-btn"><i class="fas fa-times-circle"></i> Hapus Background</button>
+    </div>
+
+    <!-- Loading Animation -->
     <div id="loading-overlay">
         <div class="loading-container">
             <div class="loading-ring"></div>
@@ -22,7 +55,7 @@
     </div>
 
     <div class="container" id="main-content" style="display: none;">
-        <!-- Header Mewah dengan GIF di kiri dan kanan (Ganti simbol ⚡) -->
+        <!-- Header -->
         <div class="header-badge">
             <div class="glow-effect"></div>
             <div class="header-gif-left">
@@ -54,7 +87,7 @@
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="no-limit">
-                    <label for="no-limit"><i class="fas fa-infinity"></i> No Limit Password (bisa lebih dari 16 karakter)</label>
+                    <label for="no-limit"><i class="fas fa-infinity"></i> No Limit Password (karakter lebih panjang)</label>
                 </div>
 
                 <button id="proses-btn" class="btn-proses">
@@ -86,14 +119,18 @@
                         Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada menu Ubah Password, Dan mohon untuk selalu menjaga kerahasiaan akun data anda dari orang lain, Terima kasih.</p>
                     </div>
                     <div class="result-actions">
-                        <button id="copy-btn" class="btn-copy"><i class="fas fa-copy"></i> Copy Data</button>
-                        <button id="clear-btn" class="btn-clear"><i class="fas fa-trash-alt"></i> Bersihkan Data</button>
+                        <button id="copy-btn" class="btn-copy">
+                            <i class="fas fa-copy"></i> Copy Data &amp; Bersihkan
+                        </button>
+                        <button id="clear-btn" class="btn-clear">
+                            <i class="fas fa-trash-alt"></i> Bersihkan Data
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- History Card dengan Total User -->
+        <!-- History Card -->
         <div class="history-card">
             <div class="history-header">
                 <div class="history-title">
@@ -118,7 +155,7 @@
                             <th>No</th>
                             <th>User ID</th>
                             <th>Password</th>
-                            <th>Tanggal & Jam</th>
+                            <th>Tanggal &amp; Jam</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
