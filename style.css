@@ -806,3 +806,216 @@ body::before {
         font-size: 11px;
     }
 }
+
+/* ========== BACKGROUND MEDIA LAYER ========== */
+#bg-media {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    display: none;
+    overflow: hidden;
+}
+
+#bg-media img,
+#bg-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: transparent;
+    transition: background 0.4s;
+}
+
+/* ========== BG TOGGLE BUTTON (pojok kanan bawah) ========== */
+#bg-toggle-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 8000;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(78,205,196,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#bg-toggle-btn:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 8px 30px rgba(78,205,196,0.7);
+}
+
+/* ========== BG PANEL ========== */
+#bg-panel {
+    position: fixed;
+    bottom: 88px;
+    right: 24px;
+    z-index: 7999;
+    width: 280px;
+    background: rgba(10,8,30,0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(78,205,196,0.3);
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55), opacity 0.3s;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+#bg-panel.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.bg-panel-title {
+    color: #4ecdc4;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.bg-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px;
+    border: 2px dashed rgba(78,205,196,0.4);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    text-align: center;
+}
+
+.bg-upload-label:hover {
+    border-color: #4ecdc4;
+    background: rgba(78,205,196,0.08);
+}
+
+.bg-upload-label i {
+    font-size: 26px;
+    color: #4ecdc4;
+}
+
+.bg-upload-label small {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+}
+
+.bg-slider-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bg-slider-wrap label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bg-slider-wrap label i {
+    color: #4ecdc4;
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#bg-opacity-slider {
+    flex: 1;
+    accent-color: #4ecdc4;
+    cursor: pointer;
+}
+
+#bg-opacity-value {
+    font-size: 12px;
+    color: #4ecdc4;
+    font-weight: 700;
+    min-width: 36px;
+    text-align: right;
+}
+
+#bg-clear-btn {
+    background: rgba(255,107,107,0.15);
+    border: 1px solid rgba(255,107,107,0.3);
+    color: #ff6b6b;
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+#bg-clear-btn:hover {
+    background: rgba(255,107,107,0.35);
+    transform: scale(1.02);
+}
+
+/* Pastikan card & konten tetap terlihat di atas background */
+.card, .history-card, .header-badge {
+    position: relative;
+    z-index: 1;
+}
+
+/* Saat ada background, perkuat glass effect sedikit */
+.card, .history-card {
+    background: rgba(10, 8, 30, 0.65);
+    backdrop-filter: blur(20px);
+}
+
+.header-badge {
+    background: rgba(10, 8, 30, 0.55);
+    backdrop-filter: blur(20px);
+}
+
+/* Responsive panel */
+@media (max-width: 480px) {
+    #bg-panel {
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 80px;
+    }
+    #bg-toggle-btn {
+        bottom: 16px;
+        right: 16px;
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+    }
+}
