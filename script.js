@@ -1,134 +1,94 @@
     // Data Storage
     let resetHistory = [];
-    
+
     // Load history from localStorage
     function loadHistory() {
         const saved = localStorage.getItem('angkabet_password_history_v2');
-        if (saved) {
-            resetHistory = JSON.parse(saved);
-        }
+        if (saved) resetHistory = JSON.parse(saved);
         renderHistory();
         updateTotalUser();
     }
-    
-    // Save history to localStorage
+
     function saveHistory() {
         localStorage.setItem('angkabet_password_history_v2', JSON.stringify(resetHistory));
         renderHistory();
         updateTotalUser();
     }
-    
-    // Update total user count
+
     function updateTotalUser() {
-        const totalUserSpan = document.getElementById('total-user-count');
-        if (totalUserSpan) {
-            totalUserSpan.textContent = resetHistory.length;
-        }
+        const el = document.getElementById('total-user-count');
+        if (el) el.textContent = resetHistory.length;
     }
-    
-    // Generate random password — hanya huruf & angka, min 6 maks 12
+
+    // Generate password — huruf & angka saja, min 6 maks 12
     function generatePassword(noLimit = false) {
         const lower   = 'abcdefghijklmnopqrstuvwxyz';
         const upper   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const numbers = '0123456789';
+        const all     = lower + upper + numbers;
 
-        let length;
-        if (noLimit) {
-            length = Math.floor(Math.random() * (20 - 13 + 1)) + 13; // 13-20 untuk no-limit
-        } else {
-            length = Math.floor(Math.random() * (12 - 6 + 1)) + 6;   // 6-12 karakter
-        }
+        const length = noLimit
+            ? Math.floor(Math.random() * 8) + 13   // 13-20
+            : Math.floor(Math.random() * 7) + 6;   // 6-12
 
-        const allChars = lower + upper + numbers;
-
-        let password = '';
-        let isUnique  = false;
-
+        let password = '', isUnique = false;
         while (!isUnique) {
-            password = '';
-
-            // wajib ada huruf kecil
-            password += lower[Math.floor(Math.random() * lower.length)];
-            // wajib ada huruf besar
+            password  = lower[Math.floor(Math.random() * lower.length)];
             password += upper[Math.floor(Math.random() * upper.length)];
-            // wajib ada angka
             password += numbers[Math.floor(Math.random() * numbers.length)];
-
-            // isi sisanya
-            while (password.length < length) {
-                password += allChars[Math.floor(Math.random() * allChars.length)];
-            }
-
-            // acak posisi
+            while (password.length < length)
+                password += all[Math.floor(Math.random() * all.length)];
             password = password.split('').sort(() => Math.random() - 0.5).join('');
-
-            // pastikan unik
-            isUnique = !resetHistory.some(item => item.password === password);
+            isUnique = !resetHistory.some(i => i.password === password);
         }
-
         return password;
     }
-    
-    // Show Toast Notification
+
+    // Toast
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toast-notification');
-        toast.innerHTML = '';
-        
-        let icon = '';
-        if (type === 'success') icon = '<i class="fas fa-check-circle" style="color:#4ecdc4"></i>';
-        if (type === 'error')   icon = '<i class="fas fa-exclamation-circle" style="color:#ff6b6b"></i>';
-        if (type === 'info')    icon = '<i class="fas fa-info-circle" style="color:#45b7d1"></i>';
-        
-        toast.innerHTML = icon + '<span>' + message + '</span>';
-        toast.className = 'toast ' + type + ' show';
-        
-        setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        const icons = { success: '#4ecdc4', error: '#ff6b6b', info: '#45b7d1' };
+        const iClass = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+        toast.innerHTML = `<i class="fas ${iClass[type]}" style="color:${icons[type]}"></i><span>${message}</span>`;
+        toast.className = `toast ${type} show`;
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
     }
-    
+
     // Copy to clipboard
     async function copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
             showToast('Berhasil disalin ke clipboard!', 'success');
             return true;
-        } catch (err) {
+        } catch {
             showToast('Gagal menyalin data', 'error');
             return false;
         }
     }
-    
-    // Copy password only (tombol kecil di sebelah password — TIDAK auto clear)
+
+    // Copy password only (tombol kecil — tidak auto clear)
     function copyPasswordOnly() {
-        const password = document.getElementById('result-password').textContent;
-        if (password) {
-            copyToClipboard(password);
-        } else {
-            showToast('Tidak ada password untuk disalin', 'error');
-        }
+        const pw = document.getElementById('result-password').textContent;
+        pw ? copyToClipboard(pw) : showToast('Tidak ada password untuk disalin', 'error');
     }
-    
-    // Copy full message lalu langsung bersihkan data
+
+    // Copy full message lalu langsung bersihkan
     async function copyFullMessage() {
         const username = document.getElementById('result-username').textContent;
         const password = document.getElementById('result-password').textContent;
-        
-        const fullMessage =
+        const msg =
 `Yth, Kami sudah berhasil mereset kembali password anda,
 
-User ID / Username : ${username}  
+User ID / Username : ${username}
 Password : ${password}
 
 Mohon untuk mengcopy paste User ID / Username dan password yang telah kami berikan tanpa menggunakan spasi ya bosku.
-Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada menu Ubah Password , Dan mohon untuk selalu menjaga kerahasiaan akun data anda dari orang lain, Terima kasih.`;
-        
-        const ok = await copyToClipboard(fullMessage);
-        if (ok) {
-            // Tunda sedikit agar toast "disalin" sempat muncul, lalu bersihkan
-            setTimeout(() => { clearResult(true); }, 600);
-        }
+Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada menu Ubah Password, Dan mohon untuk selalu menjaga kerahasiaan akun data anda dari orang lain, Terima kasih.`;
+        const ok = await copyToClipboard(msg);
+        if (ok) setTimeout(() => clearResult(true), 600);
     }
-    
-    // Delete single history item
+
     function deleteHistoryItem(index) {
         if (confirm('Yakin ingin menghapus history ini?')) {
             resetHistory.splice(index, 1);
@@ -136,82 +96,58 @@ Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada me
             showToast('History berhasil dihapus', 'info');
         }
     }
-    
-    // Render History Table
+
     function renderHistory() {
         const tbody = document.getElementById('history-body');
         if (!tbody) return;
-        
         if (resetHistory.length === 0) {
             tbody.innerHTML = '<tr class="empty-row"><td colspan="5">✨ Belum ada history reset password ✨</td></tr>';
             return;
         }
-        
-        tbody.innerHTML = resetHistory.map((item, index) => `
+        tbody.innerHTML = resetHistory.map((item, i) => `
             <tr>
-                <td>${index + 1}</td>
-                <td><strong style="color: #4ecdc4;">${escapeHtml(item.username)}</strong></td>
-                <td style="font-family: monospace; color: #ff6b6b;">${escapeHtml(item.password)}</td>
-                <td style="font-size: 12px;">${escapeHtml(item.datetime)}</td>
-                <td>
-                    <button class="btn-delete-row" onclick="deleteHistoryItem(${index})">
-                        <i class="fas fa-trash-alt"></i> Hapus
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+                <td>${i + 1}</td>
+                <td><strong style="color:#4ecdc4">${escapeHtml(item.username)}</strong></td>
+                <td style="font-family:monospace;color:#ff6b6b">${escapeHtml(item.password)}</td>
+                <td style="font-size:12px">${escapeHtml(item.datetime)}</td>
+                <td><button class="btn-delete-row" onclick="deleteHistoryItem(${i})">
+                    <i class="fas fa-trash-alt"></i> Hapus</button></td>
+            </tr>`).join('');
     }
-    
-    // Escape HTML
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+
+    function escapeHtml(t) {
+        const d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
     }
-    
-    // Get current datetime
+
     function getCurrentDateTime() {
         const now = new Date();
-        const tanggal = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-        const jam     = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        return `${tanggal} - ${jam}`;
+        return now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})
+             + ' - ' + now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     }
-    
-    // Proses Reset Password
+
     function prosesReset() {
-        const usernameInput = document.getElementById('username');
-        const username      = usernameInput.value.trim();
-        const noLimit       = document.getElementById('no-limit').checked;
-        
-        if (!username) {
-            showToast('Masukkan User ID / Username terlebih dahulu!', 'error');
-            usernameInput.focus();
-            return;
-        }
-        
-        const newPassword = generatePassword(noLimit);
-        
+        const inp      = document.getElementById('username');
+        const username = inp.value.trim();
+        if (!username) { showToast('Masukkan User ID / Username terlebih dahulu!', 'error'); inp.focus(); return; }
+        const newPassword = generatePassword(document.getElementById('no-limit').checked);
         document.getElementById('result-username').textContent = username;
         document.getElementById('result-password').textContent  = newPassword;
         document.getElementById('result-card').style.display    = 'block';
-        
         resetHistory.unshift({ username, password: newPassword, datetime: getCurrentDateTime() });
         saveHistory();
-        
         document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         showToast(`✅ Password berhasil direset untuk ${username}`, 'success');
     }
-    
-    // Clear result form
-    // skipToast: true jika dipanggil setelah copy (toast sudah tampil)
+
     function clearResult(skipToast = false) {
         document.getElementById('result-card').style.display = 'none';
         document.getElementById('username').value = '';
         document.getElementById('username').focus();
         if (!skipToast) showToast('Form berhasil dibersihkan', 'info');
     }
-    
-    // Clear all history
+
     function clearAllHistory() {
         if (confirm('⚠️ Yakin ingin menghapus SEMUA history reset password? ⚠️')) {
             resetHistory = [];
@@ -221,7 +157,62 @@ Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada me
     }
 
     // ========== BACKGROUND MANAGER ==========
-    let bgObjectURL = null;  // untuk revoke URL lama
+    // Background disimpan ke localStorage sebagai base64 agar tidak hilang saat refresh
+    const BG_STORE_KEY = 'angkabet_bg_v1';
+
+    function saveBgToStorage(base64, mimeType, opacity) {
+        try {
+            localStorage.setItem(BG_STORE_KEY, JSON.stringify({ base64, mimeType, opacity }));
+        } catch(e) {
+            // Jika file terlalu besar (>5MB) localStorage bisa penuh — tampilkan pesan
+            showToast('File terlalu besar untuk disimpan permanen. Background aktif sampai refresh.', 'info');
+        }
+    }
+
+    function clearBgFromStorage() {
+        localStorage.removeItem(BG_STORE_KEY);
+    }
+
+    function applyBg(src, mimeType, opacity) {
+        const bgMedia   = document.getElementById('bg-media');
+        const bgOverlay = document.getElementById('bg-overlay');
+        bgMedia.innerHTML = '';
+
+        if (mimeType.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = src;
+            bgMedia.appendChild(img);
+        } else if (mimeType.startsWith('video/')) {
+            const vid = document.createElement('video');
+            vid.src = src;
+            vid.autoplay = true;
+            vid.loop     = true;
+            vid.muted    = true;
+            vid.playsInline = true;
+            bgMedia.appendChild(vid);
+        }
+
+        bgMedia.style.display = 'block';
+        setOpacity(opacity);
+    }
+
+    function setOpacity(val) {
+        const bgMedia   = document.getElementById('bg-media');
+        const bgOverlay = document.getElementById('bg-overlay');
+        const slider    = document.getElementById('bg-opacity-slider');
+        const opValue   = document.getElementById('bg-opacity-value');
+
+        bgMedia.style.opacity = val;
+
+        // Overlay: saat opacity rendah (transparan), konten tetap terbaca
+        // — pakai overlay gelap tipis tapi JANGAN terlalu gelap
+        // Rumus: semakin transparan bg, overlay semakin terang agar card tetap kontras
+        const overlayAlpha = (1 - val) * 0.35;
+        bgOverlay.style.background = `rgba(10,8,28,${overlayAlpha.toFixed(2)})`;
+
+        if (slider)  slider.value = val;
+        if (opValue) opValue.textContent = Math.round(val * 100) + '%';
+    }
 
     function initBgManager() {
         const panel     = document.getElementById('bg-panel');
@@ -229,84 +220,80 @@ Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada me
         const fileInput = document.getElementById('bg-file-input');
         const clearBtn  = document.getElementById('bg-clear-btn');
         const opSlider  = document.getElementById('bg-opacity-slider');
-        const opValue   = document.getElementById('bg-opacity-value');
         const bgMedia   = document.getElementById('bg-media');
-        const bgOverlay = document.getElementById('bg-overlay');
 
-        // Toggle panel
-        toggleBtn.addEventListener('click', () => {
+        // ---- FIX: toggle panel — stopPropagation agar tidak konflik dg listener luar ----
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             panel.classList.toggle('open');
         });
 
-        // Tutup panel kalau klik di luar
-        document.addEventListener('click', (e) => {
-            if (!panel.contains(e.target) && e.target !== toggleBtn) {
-                panel.classList.remove('open');
-            }
-        });
+        // Klik di dalam panel tidak menutupnya
+        panel.addEventListener('click', (e) => e.stopPropagation());
 
-        // Upload file
+        // Klik di luar panel → tutup
+        document.addEventListener('click', () => panel.classList.remove('open'));
+
+        // ---- Upload file → konversi ke base64 agar bisa disimpan di localStorage ----
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            if (bgObjectURL) URL.revokeObjectURL(bgObjectURL);
-            bgObjectURL = URL.createObjectURL(file);
-
-            const type = file.type;
-
-            // Sembunyikan semua child lama
-            bgMedia.innerHTML = '';
-
-            if (type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = bgObjectURL;
-                img.id  = 'bg-img';
-                bgMedia.appendChild(img);
-            } else if (type.startsWith('video/')) {
-                const vid = document.createElement('video');
-                vid.src      = bgObjectURL;
-                vid.autoplay = true;
-                vid.loop     = true;
-                vid.muted    = true;
-                vid.playsInline = true;
-                vid.id       = 'bg-vid';
-                bgMedia.appendChild(vid);
-            } else {
+            const validImage = file.type.startsWith('image/');
+            const validVideo = file.type.startsWith('video/');
+            if (!validImage && !validVideo) {
                 showToast('Format tidak didukung. Gunakan JPG, PNG, GIF, atau video.', 'error');
                 return;
             }
 
-            bgMedia.style.display = 'block';
-            applyOpacity(parseFloat(opSlider.value));
-            showToast('Background berhasil dipasang!', 'success');
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const base64   = ev.target.result;          // data:mime;base64,...
+                const mimeType = file.type;
+                const opacity  = parseFloat(opSlider.value);
+
+                applyBg(base64, mimeType, opacity);
+                saveBgToStorage(base64, mimeType, opacity);
+                showToast('Background berhasil dipasang & disimpan!', 'success');
+            };
+            reader.readAsDataURL(file);
             fileInput.value = '';
         });
 
         // Hapus background
-        clearBtn.addEventListener('click', () => {
-            if (bgObjectURL) { URL.revokeObjectURL(bgObjectURL); bgObjectURL = null; }
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             bgMedia.innerHTML = '';
             bgMedia.style.display = 'none';
-            bgOverlay.style.background = 'transparent';
+            document.getElementById('bg-overlay').style.background = 'transparent';
+            clearBgFromStorage();
             showToast('Background dihapus', 'info');
         });
 
         // Slider opacity
         opSlider.addEventListener('input', () => {
-            const val = parseFloat(opSlider.value);
-            opValue.textContent = Math.round(val * 100) + '%';
-            applyOpacity(val);
+            const val     = parseFloat(opSlider.value);
+            const stored  = localStorage.getItem(BG_STORE_KEY);
+            setOpacity(val);
+            // Update opacity di storage juga
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    data.opacity = val;
+                    localStorage.setItem(BG_STORE_KEY, JSON.stringify(data));
+                } catch {}
+            }
         });
 
-        function applyOpacity(val) {
-            // val 0 = media transparan penuh (bisa dipakai jika ingin efek ghost),
-            // val 1 = media penuh terlihat.
-            // Kita balik: slider ke kiri = lebih transparan = overlay lebih gelap
-            bgMedia.style.opacity = val;
-            // Overlay gelap biar konten tetap terbaca (sedikit lebih gelap saat media terang)
-            const overlayAlpha = Math.round((1 - val) * 0.5 * 100) / 100;
-            bgOverlay.style.background = `rgba(15,12,41,${overlayAlpha})`;
+        // ---- Muat background dari localStorage saat halaman dibuka ----
+        const storedBg = localStorage.getItem(BG_STORE_KEY);
+        if (storedBg) {
+            try {
+                const { base64, mimeType, opacity } = JSON.parse(storedBg);
+                applyBg(base64, mimeType, opacity);
+            } catch {
+                clearBgFromStorage();
+            }
         }
     }
 
@@ -317,23 +304,23 @@ Saran kami di simpan di memo anda dan ubah password anda secara berkala, pada me
             document.getElementById('main-content').style.display    = 'block';
             showToast('✨ Selamat datang di ANGKABET_GEN_Z88 ✨', 'info');
         }, 2000);
-        
+
         loadHistory();
         initBgManager();
-        
+
         document.getElementById('proses-btn').addEventListener('click', prosesReset);
         document.getElementById('copy-btn').addEventListener('click', copyFullMessage);
         document.getElementById('clear-btn').addEventListener('click', () => clearResult(false));
-        
-        const copyPasswordBtn = document.getElementById('copy-password-only');
-        if (copyPasswordBtn) copyPasswordBtn.addEventListener('click', copyPasswordOnly);
-        
-        const clearHistoryBtn = document.getElementById('clear-history-btn');
-        if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', clearAllHistory);
-        
-        document.getElementById('username').addEventListener('keypress', function (e) {
+
+        const cpBtn = document.getElementById('copy-password-only');
+        if (cpBtn) cpBtn.addEventListener('click', copyPasswordOnly);
+
+        const chBtn = document.getElementById('clear-history-btn');
+        if (chBtn) chBtn.addEventListener('click', clearAllHistory);
+
+        document.getElementById('username').addEventListener('keypress', e => {
             if (e.key === 'Enter') prosesReset();
         });
     });
-    
+
     window.deleteHistoryItem = deleteHistoryItem;
